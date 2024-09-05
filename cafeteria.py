@@ -144,6 +144,8 @@ def generate_weekly_report():
 
 # Graph configuration function (as before)
 
+import numpy as np  # Add this import at the top if not already included
+
 def generate_weekly_chart():
     # Get the selected date from the date entry widget
     selected_date = date_entry.get_date()
@@ -167,8 +169,14 @@ def generate_weekly_chart():
                             price = float(line.split("€")[1].replace(',', '.'))
                             weekly_profit[i] += price
 
+    # Calculate the average profit
+    average_profit = np.mean(weekly_profit)
+
     plt.figure(figsize=(10, 6))
     plt.bar(days_of_week, weekly_profit, color='#4CAF50', edgecolor='white')
+
+    # Add the average profit line
+    plt.axhline(average_profit, color='red', linestyle='--', label=f'Average Profit (€{average_profit:.2f})')
 
     # Graph customization
     plt.xlabel('Day of the Week', fontsize=14, color='#333333', labelpad=15)
@@ -177,12 +185,6 @@ def generate_weekly_chart():
     plt.xticks(fontsize=12, color='#333333')
     plt.yticks(fontsize=12, color='#333333')
 
-    # Remove graph borders for a minimalist design
-    plt.gca().spines['top'].set_visible(False)
-    plt.gca().spines['right'].set_visible(False)
-    plt.gca().spines['left'].set_color('#DDDDDD')
-    plt.gca().spines['bottom'].set_color('#DDDDDD')
-    
     # Add value labels on the bars
     for i, v in enumerate(weekly_profit):
         plt.text(i, v + 0.02, f"€{v:.2f}", ha='center', va='bottom', fontsize=12, color='#333333')
@@ -190,6 +192,15 @@ def generate_weekly_chart():
     # Light background for a smooth effect
     plt.gca().set_facecolor('#F9F9F9')
     plt.grid(True, which='major', axis='y', linestyle='--', color='#DDDDDD')
+
+    # Remove graph borders for a minimalist design
+    plt.gca().spines['top'].set_visible(False)
+    plt.gca().spines['right'].set_visible(False)
+    plt.gca().spines['left'].set_color('#DDDDDD')
+    plt.gca().spines['bottom'].set_color('#DDDDDD')
+
+    # Show legend for the average line
+    plt.legend()
 
     plt.tight_layout()
     plt.show()
